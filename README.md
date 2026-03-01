@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/Platform-AVR-blue" alt="Platform">
   <img src="https://img.shields.io/badge/MCU-ATmega8-green" alt="MCU">
   <img src="https://img.shields.io/badge/Language-Assembly-lightgrey" alt="Language">
-  <img src="https://img.shields.io/badge/WS2812B-orange" alt="LED Type">  
+  <img src="https://img.shields.io/badge/WS2812B-orange" alt="LED">  
   <img src="https://img.shields.io/badge/IDE-Atmel%20Studio-blueviolet" alt="IDE">
 </p>
 
