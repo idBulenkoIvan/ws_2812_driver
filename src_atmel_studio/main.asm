@@ -3,64 +3,64 @@
  *   Author: Bulenko Ivan
  */ 
 
-; Подключение def-файлов
+; Connecting .inc defenition-files
 .include "inc/regdefs.inc"
 .include "inc/constants.inc"
 
-; Инициализация ОЗУ
+; RAM initialization
 .dseg
 	.org 0x0060                 
 	red:    .byte LED_COUNT     
 	green:  .byte LED_COUNT     
 	blue:   .byte LED_COUNT     
 
-; Инициализация ПЗУ
+; ROM initialization
 .cseg
 	
-	; Вектор сброса
+	; Reset vector
 	.org 0x0000
 		rjmp reset 
 	
-	; Вектор прерывания таймера по сравнению             
+	; Timer interrupt-vector
 	.org 0x0006                 
 		rjmp timer_interrupt
 
-	; Вектор прерывания АЦП
+	; ADC interrupt-vector
 	.org 0x000E                 
 		rjmp adc_interrupt
 
 
 reset:
 	
-	; Инициализация младшего бита указателя стека
+	; Initialization of the least significant bit of the stack pointer
     ldi temp, low(RAMEND)
     out SPL, temp
 
-	; Инициализация старшего бита указателя стека
+	; Initialization of the high bit of the stack pointer
     ldi temp, high(RAMEND)
     out SPH, temp
 
-	; Настройка портов 
+	; Port configuration 
     ldi temp, 0b11111111    
     out DDRB, temp
     ldi temp, 0x00          
     out PORTB, temp
 
-	; Настройка АЦП
+	; ADC configuration
     ldi temp, (1 << ADEN) | (1 << ADPS0) | (1 << ADPS1) | (1 << ADIE) | (1 << ADFR)
     out ADCSRA, temp         
     
     ldi temp, (1 << REFS0)   
     out ADMUX, temp
 
-	; Настройка таймера по сравнению
+	; Timer configuration
     ldi temp, (1 << WGM12) | (1 << CS12) | (1 << CS10)  
     out TCCR1B, temp
     
     ldi temp, (1 << OCIE1A)  
     out TIMSK, temp
     
-	; Установка начальных значений для сравнения
+	; Setting initial values for comparison
     ldi temp, 0x00
     out OCR1AH, temp
     ldi temp, 0x0F
@@ -68,16 +68,16 @@ reset:
 
     ldi mode_reg, MODE_CYAN  
 
-    ; Глобальное разрешение прерываний
+    ; Global interrupt enable
 	sei        
 	            
-	; Запуск преобразования АЦП   
+	; ADC conversion start  
     sbi ADCSRA, ADSC
 
 
 main:
 	
-	; Инициализация указателей на массивы
+	; Arrays pointers initialization
     ldi XL, low(red)
     ldi XH, high(red)
     ldi YL, low(green)
@@ -90,13 +90,13 @@ main:
 
 main_cycle:
 	
-	; Отключение глобальных прерываний для безопасного обновления состояния ленты
+	; Disabling global interrupts to safely update the LED strip state
     cli
 
-	; Сброс состояния ленты
+	; LED strip reset
     rcall reset_led
     
-	; Сброс указателей на начало массивов
+	; Resetting pointers to the beginning of the arrays
     ldi XL, low(red)
     ldi XH, high(red)
     ldi YL, low(green)
@@ -109,18 +109,18 @@ main_cycle:
 
 led_output_loop:
 	
-	; Загрузка цвета для текущего светодиода
+	; Color loading for the current LED
     ld red_reg, X+
     ld green_reg, Y+
     ld blue_reg, Z+
     
-	; Отправка данных на ленту
+	; Data sending to the LED strip
     rcall led_control
     
     dec led_counter
     brne led_output_loop
     
-	; Глобальное разрешение прерываний
+	; Global interrupt enable
     sei
     
     rjmp main_cycle
@@ -128,12 +128,12 @@ led_output_loop:
 
 timer_interrupt:
 
-	; Сохранение контекста
+	; Context saving
     push temp
     in temp, SREG
     push temp
 
-    ; Инициализация указателей на начало массивов
+    ; Initialization of pointers to the beginnig of the arrays
     ldi XL, low(red)
     ldi XH, high(red)
     ldi YL, low(green)
@@ -141,11 +141,11 @@ timer_interrupt:
     ldi ZL, low(blue)
     ldi ZH, high(blue)
     
-    ; Установка счетчика светодиодов
+    ; Installation of LED counters
     ldi temp, LED_COUNT
     push temp                
 
-    ; Выбор режима
+    ; Mode setting
     cpi mode_reg, MODE_CYAN
     brne check_red_mode
     
@@ -204,11 +204,11 @@ fill_loop:
 
 adc_interrupt:
 
-    ; Чтение регистров АЦП
+    ; ADC registers reading
     in adcl_val, ADCL
     in adch_val, ADCH
     
-	; Проверка на граничное значение 
+	; Checking for the edge-value
     cpi adch_val, 0x00
     breq adc_min_value
     
@@ -219,7 +219,7 @@ adc_interrupt:
 
 adc_min_value:
 
-    ; Защита от слишком быстрых прерываний
+    ; Protection against too fast interrputs
     ldi adcl_val, ADC_MIN_VAL
     out OCR1AH, adch_val     
     out OCR1AL, adcl_val

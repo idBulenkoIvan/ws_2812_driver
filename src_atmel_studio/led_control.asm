@@ -3,14 +3,14 @@
  *   Author: Bulenko Ivan
  */ 
 
-; Подключение def-файлов
+; Connecting .inc defenition-files
 .include "inc/regdefs.inc"
 .include "inc/constants.inc"
 
 
 led_control:
 	
-	; Сохранение значения регистров в стек
+	; Context saving
     push temp
     push red_reg
     push green_reg
@@ -25,15 +25,15 @@ led_bit_loop:
     ldi temp, (0 << PB0)
     out PORTB, temp
     
-    ; Подготовка следующего бита - сдвиг нужного бита
+    ; Preparing the next bit - shifting the desired bit
     lsl blue_reg          
     rol red_reg           
     rol green_reg         
     
-	; Проверка бита
+	; Bit validation
     brcc send_zero        
     
-	; Отправка положительного логического сигнала
+	; Sending a positive logical signal
     ldi temp, (1 << PB0)
     out PORTB, temp       
     nop                   
@@ -44,7 +44,7 @@ led_bit_loop:
 
 send_zero:
 	
-	; Отправка отрицательного логического сигнала
+	; Sending a negative logical signal
     ldi temp, (1 << PB0)
     out PORTB, temp       
     nop                   
@@ -60,7 +60,7 @@ bit_done:
     ldi temp, (0 << PB0)
     out PORTB, temp
     
-	; Восстановление значений регистров из стека
+	; Context restoration
     pop bit_counter
     pop blue_reg
     pop green_reg
@@ -71,14 +71,14 @@ bit_done:
 
 reset_led:
 	
-	; Сброс состояния ленты
+	; LED reset
     push temp
     ldi temp, RESET_DELAY
     
 
 reset_delay_loop:
 	
-	; Контроль сброса состояния ленты
+	; LED strip reset control
     dec temp
     brne reset_delay_loop
     
