@@ -38,10 +38,10 @@
 - Прерывания по таймеру для смены режимов
 
 <p align="center">
-  <img src="docs/images/schema.png">
+  <img src="docs/images/result.gif">
 </p>
 <p align="center">
-  Рисунок 1. Принципиальная схема подключения
+  Рисунок 1. Анимация
 </p>
 
 <p align="center">
