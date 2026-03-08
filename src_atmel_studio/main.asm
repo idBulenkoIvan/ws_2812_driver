@@ -194,6 +194,7 @@ fill_all_leds:
     
 
 fill_loop:
+
     st X+, red_reg
     st Y+, green_reg
     st Z+, blue_reg
