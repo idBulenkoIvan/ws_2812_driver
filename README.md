@@ -6,12 +6,8 @@
   <img src="https://img.shields.io/badge/Platform-AVR-blue" alt="Platform">
   <img src="https://img.shields.io/badge/MCU-ATmega8-green" alt="MCU">
   <img src="https://img.shields.io/badge/Language-Assembly-lightgrey" alt="Language">
-  <img src="https://img.shields.io/badge/WS2812B-orange" alt="LED Type">
-  
-  <img src="https://img.shields.io/badge/Version-1.0.0-brightgreen" alt="Version">
-  <img src="https://img.shields.io/badge/Status-Stable-success" alt="Status">
-  
   <img src="https://img.shields.io/badge/IDE-Atmel%20Studio-blueviolet" alt="IDE">
+  <img src="https://img.shields.io/badge/WS2812-orange" alt="Chip">  
 </p>
 
 ## <b>Навигация</b>
